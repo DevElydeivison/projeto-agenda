@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "main": "server.js",
   "engines": {
-    "node": "20.x"
-  },
+  "node": "26.x"
+}
+  ,
   "scripts": {
     "start": "node server.js",
     "start:dev": "nodemon server.js --ignore public --ignore frontend",
