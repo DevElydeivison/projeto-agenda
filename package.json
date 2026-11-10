@@ -1,13 +1,17 @@
 {
-  "name": "Projeto agenda",
+  "name": "projeto-agenda",
   "version": "1.0.0",
-  "description": "",
   "main": "server.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js --ignore public --ignore frontend",
-    "dev": "webpack -w"
+  "engines": {
+    "node": "20.x"
   },
+  "scripts": {
+    "start": "node server.js",
+    "start:dev": "nodemon server.js --ignore public --ignore frontend",
+    "dev": "webpack -w",
+    "build": "webpack"
+  }
+,
   "keywords": [],
   "author": "",
   "license": "ISC",
