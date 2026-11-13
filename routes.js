@@ -58,6 +58,7 @@ route.get('/login/logout', loginController.logout);
 route.get('/buscar-cep/:cep', async (req, res) => {
   try {
     const { cep } = req.params;
+    if (!/^\d{8}$/.test(cep)) return res.status(400).json({ erro: true, mensagem: 'CEP inválido' });
     const response = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);
     res.json(response.data);
   } catch (err) {

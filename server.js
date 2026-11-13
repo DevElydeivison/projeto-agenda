@@ -11,6 +11,13 @@ const { middlewareGlobal, checkCsrfError, csrfMiddleware } = require('./src/midd
 
 const app = express();
 
+if (!process.env.CONNECTIONSTRING) {
+  throw new Error('Defina CONNECTIONSTRING nas variáveis de ambiente.');
+}
+if (!process.env.SESSION_SECRET) {
+  throw new Error('Defina SESSION_SECRET nas variáveis de ambiente.');
+}
+
 // Necessário atrás do proxy da Vercel (cookies/sessão)
 app.set('trust proxy', 1);
 
@@ -23,9 +30,6 @@ function connectDB() {
   if (!connectionPromise) {
     connectionPromise = mongoose
       .connect(process.env.CONNECTIONSTRING, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        useFindAndModify: false,
         serverSelectionTimeoutMS: 8000
       })
       .catch((err) => {
@@ -56,7 +60,7 @@ app.use(express.static(path.resolve(__dirname, 'public')));
 
 app.use(
   session({
-    secret: process.env.SESSION_SECRET || 'troque-este-segredo-em-producao',
+    secret: process.env.SESSION_SECRET,
     store: MongoStore.create({
       mongoUrl: process.env.CONNECTIONSTRING,
       touchAfter: 24 * 3600
@@ -65,7 +69,9 @@ app.use(
     saveUninitialized: false,
     cookie: {
       maxAge: 1000 * 60 * 60 * 24 * 7,
-      httpOnly: true
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax'
     }
   })
 );
