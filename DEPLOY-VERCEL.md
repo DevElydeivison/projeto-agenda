@@ -17,3 +17,11 @@ Na Vercel, mantenha o framework como **Other**, diretório raiz na pasta do proj
 - Arquivos JS não carregam: confira o diretório `public/assets/js` e a build.
 
 **Observação:** não foi possível executar uma implantação real na sua conta Vercel nem testar o MongoDB sem credenciais.
+
+## 4. Conexão e sessões (refatoração)
+- Mongoose e `connect-mongo` compartilham o mesmo cliente do MongoDB, evitando conexões duplicadas.
+- O cliente é reutilizado por invocações aquecidas; falhas permitem nova tentativa.
+- Erros de banco retornam HTTP 503 em vez de uma exceção não tratada.
+- `/health` verifica somente se a configuração obrigatória está presente, **não** a conectividade com o MongoDB.
+- Em Vercel, `SESSION_SECRET` deve permanecer igual entre deploys para preservar cookies.
+- Após o deploy, abra `/health`. Se retornar `configuration_error`, confira variáveis de ambiente. Se retornar `running`, confira os Runtime Logs para erros de banco.
